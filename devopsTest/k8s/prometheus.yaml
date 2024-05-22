@@ -1,0 +1,13 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: spring-app-monitor
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: spring  # 서비스 레이블과 일치해야 합니다.
+  endpoints:
+    - port: web  # 서비스 포트 이름
+      path: /actuator/prometheus  # Spring Boot 메트릭 노출 경로

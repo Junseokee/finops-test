@@ -1,0 +1,47 @@
+server:
+  statefulSet:
+    enabled: true
+  replicaCount: 1
+  global:
+    ## How frequently to scrape targets by default
+    scrape_interval: 10s
+    ## How long until a scrape request times out
+    scrape_timeout: 5s
+    ## How frequently to evaluate rules
+    evaluation_interval: 1m
+  resources:
+     limits:
+       cpu: 200m
+       memory: 256Mi
+     requests:
+       cpu: 200m
+       memory: 256Mi
+
+  persistentVolume:
+    ## If true, Prometheus server will create/use a Persistent Volume Claim
+    ## If false, use emptyDir
+    enabled: true
+
+    ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+    accessModes:
+      - ReadWriteOnce
+    size: 8Gi
+
+  ## Prometheus data retention period (default if not specified is 15 days)
+  retention: "10d"
+
+alertmanager:
+  enabled: false
+
+kube-state-metrics:
+  enabled: true
+
+prometheus-node-exporter:
+  enabled: false
+  prometheus:
+    monitor:
+      interval: 30s
+
+
+prometheus-pushgateway:
+  enabled: false

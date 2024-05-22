@@ -1,0 +1,89 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"tekton.dev/v1beta1","kind":"Task","metadata":{"annotations":{"tekton.dev/categories":"Kubernetes","tekton.dev/displayName":"kubernetes actions","tekton.dev/pipelines.minVersion":"0.17.0","tekton.dev/platforms":"linux/amd64","tekton.dev/tags":"CLI, kubectl"},"labels":{"app.kubernetes.io/version":"0.2"},"name":"kubectl-deploy","namespace":"default"},"spec":{"description":"This task is the generic kubectl CLI task which can be used to run all kinds of k8s commands","params":[{"default":"gcr.io/cloud-builders/kubectl@sha256:8ab94be8b2b4f3d117f02d868b39540fddd225447abf4014f7ba4765cb39f753","name":"IMAGE"},{"name":"TAG","type":"string"},{"name":"YAMLFILE","type":"string"},{"name":"NAMESPACE","type":"string"}],"results":[{"description":"some result can be emitted if someone wants to.","name":"output-result"}],"steps":[{"args":["-i","s;latest;$(params.TAG);g","$(workspaces.manifest-dir.path)/$(params.YAMLFILE)"],"command":["sed"],"image":"alpine","name":"update-yaml"},{"image":"$(params.IMAGE)","name":"kubectl","script":"#!/usr/bin/env bash\n[ \"$(workspaces.manifest-dir.bound)\" == \"true\" ] \u0026\u0026 \\\ncd $(workspaces.manifest-dir.path)\n\n[ \"$(workspaces.kubeconfig-dir.bound)\" == \"true\" ] \u0026\u0026 \\\n[ -f $(workspaces.kubeconfig-dir.path)/kubeconfig ] \u0026\u0026 \\\nexport KUBECONFIG=$(workspaces.kubeconfig-dir.path)/kubeconfig\n\nkubectl apply -f $(workspaces.manifest-dir.path)/$(params.YAMLFILE) --namespace $(params.NAMESPACE)\n"}],"workspaces":[{"name":"manifest-dir","optional":true},{"name":"kubeconfig-dir","optional":true}]}}
+      
+    tekton.dev/categories: Kubernetes
+    tekton.dev/displayName: kubernetes actions
+    tekton.dev/pipelines.minVersion: 0.17.0
+    tekton.dev/platforms: linux/amd64
+    tekton.dev/tags: 'CLI, kubectl'
+  creationTimestamp: '2022-01-25T01:00:34Z'
+  generation: 1
+  labels:
+    app.kubernetes.io/version: '0.2'
+  managedFields:
+    - apiVersion: tekton.dev/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            .: {}
+            'f:kubectl.kubernetes.io/last-applied-configuration': {}
+            'f:tekton.dev/categories': {}
+            'f:tekton.dev/displayName': {}
+            'f:tekton.dev/pipelines.minVersion': {}
+            'f:tekton.dev/platforms': {}
+            'f:tekton.dev/tags': {}
+          'f:labels':
+            .: {}
+            'f:app.kubernetes.io/version': {}
+        'f:spec':
+          .: {}
+          'f:description': {}
+          'f:params': {}
+          'f:results': {}
+          'f:steps': {}
+          'f:workspaces': {}
+      manager: kubectl-client-side-apply
+      operation: Update
+      time: '2022-01-25T01:00:34Z'
+  name: kubectl-deploy
+  resourceVersion: '3052774'
+  uid: 44000dca-ba62-4494-bb29-2dc4aa3af86b
+spec:
+  description: This task is the generic kubectl CLI task which can be used to run all kinds of k8s commands
+  params:
+    - default: 'gcr.io/cloud-builders/kubectl@sha256:8ab94be8b2b4f3d117f02d868b39540fddd225447abf4014f7ba4765cb39f753'
+      name: IMAGE
+      type: string
+    - name: TAG
+      type: string
+    - name: YAMLFILE
+      type: string
+    - name: NAMESPACE
+      type: string
+  results:
+    - description: some result can be emitted if someone wants to.
+      name: output-result
+  steps:
+    - args:
+        - '-i'
+        - s;latest;$(params.TAG);g
+        - $(workspaces.manifest-dir.path)/$(params.YAMLFILE)
+      command:
+        - sed
+      image: alpine
+      name: update-yaml
+      resources: {}
+    - image: $(params.IMAGE)
+      name: kubectl
+      resources: {}
+      script: |
+        #!/usr/bin/env bash
+        [ "$(workspaces.manifest-dir.bound)" == "true" ] && \
+        cd $(workspaces.manifest-dir.path)
+        
+        [ "$(workspaces.kubeconfig-dir.bound)" == "true" ] && \
+        [ -f $(workspaces.kubeconfig-dir.path)/kubeconfig ] && \
+        export KUBECONFIG=$(workspaces.kubeconfig-dir.path)/kubeconfig
+        
+        kubectl apply -f $(workspaces.manifest-dir.path)/$(params.YAMLFILE) --namespace $(params.NAMESPACE)
+        
+  workspaces:
+    - name: manifest-dir
+      optional: true
+    - name: kubeconfig-dir
+      optional: true

@@ -1,0 +1,47 @@
+components:
+  frontend:
+    envOverrides:
+      - name: PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+        value: http://finops-test-js-327751783.ap-northeast-2.elb.amazonaws.com/otlp-http/v1/traces
+  frontendProxy:
+    enabled: true
+    service:
+      type: NodePort
+    env:
+      - name: LOCUST_WEB_HOST
+        value: '0.0.0.0'
+      - name: ENVOY_PORT
+        value: "8080"
+      - name: FRONTEND_PORT
+        value: "8080"
+      - name: FRONTEND_HOST
+        value: '{{ include "otel-demo.name" . }}-frontend'
+      - name: LOCUST_WEB_PORT
+        value: "8089"
+      - name: GRAFANA_SERVICE_PORT
+        value: "80"
+      - name: GRAFANA_SERVICE_HOST
+        value: '{{ include "otel-demo.name" . }}-grafana'
+      - name: JAEGER_SERVICE_PORT
+        value: "16686"
+      - name: JAEGER_SERVICE_HOST
+        value: '{{ include "otel-demo.name" . }}-jaeger-query'
+      - name: OTEL_COLLECTOR_PORT_GRPC
+        value: "4317"
+      - name: OTEL_COLLECTOR_PORT_HTTP
+        value: "4318"
+      - name: OTEL_COLLECTOR_HOST
+        value: $(OTEL_COLLECTOR_NAME)
+  loadgenerator:
+    enabled: true
+    useDefault:
+      env: true
+    env:
+      - name: LOCUST_USERS
+        value: "0"
+      - name: LOCUST_SPAWN_RATE
+        value: "1"
+      - name: LOCUST_HOST
+        value: 'http://finops-test-js-327751783.ap-northeast-2.elb.amazonaws.com/'
+      - name: LOCUST_HEADLESS
+        value: "false"

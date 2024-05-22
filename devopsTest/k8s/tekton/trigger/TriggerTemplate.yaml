@@ -1,0 +1,28 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: triggertemplate
+spec:
+  params:
+    - name: tag
+      description: git tag
+      default: latest
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: tekton-pipeline-run-
+      spec:
+        serviceAccountName: tekton-sa
+        pipelineRef:
+          name: tekton-pipeline
+        params:
+          - name: tag
+            value: $(tt.params.tag)
+        workspaces:
+          - name: pipeline-shared-data
+            persistentvolumeclaim:
+              claimName: task-pv-claim
+          - name: kubeconfig-dir
+            configMap:
+              name: k8s-kubeconfig

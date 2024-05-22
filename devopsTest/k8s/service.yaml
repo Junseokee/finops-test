@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-spring-service
+  labels:
+    app: spring
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      name: web
+      targetPort: 8080
+  selector:
+    app: devops-spring-app

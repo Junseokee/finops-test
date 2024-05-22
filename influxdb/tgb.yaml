@@ -1,0 +1,14 @@
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  labels:
+    ingress.k8s.aws/stack: devops-spring-service
+  name: devops-spring-service
+  namespace: influxdb
+spec:
+  ipAddressType: ipv4
+  serviceRef:
+    name: influxdb
+    port: 8086
+  targetGroupARN: arn:aws:elasticloadbalancing:ap-northeast-2:123456789:targetgroup/finops-test-influxdb/f80b29c737b80e28
+  targetType: instance

@@ -1,0 +1,14 @@
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  labels:
+    ingress.k8s.aws/stack: devops-spring-service
+  name: devops-spring-service
+  namespace: default
+spec:
+  ipAddressType: ipv4
+  serviceRef:
+    name: devops-spring-service
+    port: 8080
+  targetGroupARN: arn:aws:elasticloadbalancing:ap-northeast-2:123456789:targetgroup/finops-test-tg/021b4be64a4a6f53
+  targetType: instance

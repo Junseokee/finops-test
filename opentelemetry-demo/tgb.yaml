@@ -1,0 +1,14 @@
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  labels:
+    ingress.k8s.aws/stack: finops-test
+  name: finops-otel-demo
+  namespace: default
+spec:
+  ipAddressType: ipv4
+  serviceRef:
+    name: my-otel-demo-frontendproxy
+    port: 8080
+  targetGroupARN: arn:aws:elasticloadbalancing:ap-northeast-2:123456789:targetgroup/finops-otel-demo/fd894ad97214aade
+  targetType: instance

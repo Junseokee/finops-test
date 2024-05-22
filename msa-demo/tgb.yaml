@@ -1,0 +1,14 @@
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  labels:
+    ingress.k8s.aws/stack: sock-shop
+  name: sock-shop-demo
+  namespace: sock-shop
+spec:
+  ipAddressType: ipv4
+  serviceRef:
+    name: front-end
+    port: 80
+  targetGroupARN: arn:aws:elasticloadbalancing:ap-northeast-2:123456789:targetgroup/finops-otel-demo/fd894ad97214aade
+  targetType: instance
